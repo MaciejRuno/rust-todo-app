@@ -1,9 +1,9 @@
-use clap::{Parser, Subcommand, Args};
+use clap::{Args, Parser, Subcommand};
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about)]
 pub struct Cli {
-   #[clap(subcommand)]
+    #[clap(subcommand)]
     pub command: Command,
 }
 
@@ -34,4 +34,3 @@ pub struct MarkCommand {
     /// Mark or unmark
     pub mark: bool,
 }
-

@@ -1,22 +1,25 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-pub enum TodoList{
-    Container{items:Vec<TodoList>, text: String},
-    Item{mark: bool, text: String}
+pub enum TodoList {
+    Container { items: Vec<TodoList>, text: String },
+    Item { mark: bool, text: String },
 }
 
 impl TodoList {
     pub fn new(name: String) -> Self {
-        Self::Container{items: Vec::new(), text:name}
+        Self::Container {
+            items: Vec::new(),
+            text: name,
+        }
     }
 
-    pub fn add_item(&mut self, item: Self){
+    pub fn add_item(&mut self, item: Self) {
         match self {
-            Self::Container{items, text: _} => {
+            Self::Container { items, text: _ } => {
                 items.push(item);
-            },
-            Self::Item{mark: _, text} => {
+            }
+            Self::Item { mark: _, text } => {
                 *self = Self::new(text.to_string());
 
                 self.add_item(item);
@@ -29,24 +32,26 @@ impl TodoList {
     }
 
     fn _get_index(&mut self, index: usize, i: &mut usize) -> Option<&mut TodoList> {
-        if index == *i { return Some(self) }
+        if index == *i {
+            return Some(self);
+        }
         *i += 1;
 
         match self {
-            Self::Container{items, text: _} => {
+            Self::Container { items, text: _ } => {
                 for item in items {
                     match item._get_index(index, i) {
                         Some(a) => {
                             return Some(a);
-                        },
-                        None => { continue; }
+                        }
+                        None => {
+                            continue;
+                        }
                     }
                 }
                 None
-            },
-            Self::Item{mark:_, text:_} => {
-                None
             }
+            Self::Item { mark: _, text: _ } => None,
         }
     }
 
@@ -60,26 +65,26 @@ impl TodoList {
         *i += 1;
 
         match self {
-            Self::Container{items, text} => {
+            Self::Container { items, text } => {
                 println!("{tabs}{i}.{text}:");
                 for item in items {
                     item._print(tab_lvl + 4, i);
                 }
-            },
-            Self::Item{mark, text} => {
-                println!("{tabs}{i}.{text} {}", if *mark {"X"} else {"_"});
+            }
+            Self::Item { mark, text } => {
+                println!("{tabs}{i}.{text} {}", if *mark { "X" } else { "_" });
             }
         }
     }
 
     pub fn mark(&mut self, new_mark: bool) -> () {
         match self {
-            Self::Item{mark, text: _} => {*mark = new_mark},
-            Self::Container{items, text: _} => {
+            Self::Item { mark, text: _ } => *mark = new_mark,
+            Self::Container { items, text: _ } => {
                 for item in items {
                     item.mark(new_mark);
                 }
-            },
+            }
         }
     }
 }
