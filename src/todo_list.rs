@@ -77,7 +77,7 @@ impl TodoList {
         }
     }
 
-    pub fn mark(&mut self, new_mark: bool) -> () {
+    pub fn mark(&mut self, new_mark: bool) {
         match self {
             Self::Item { mark, text: _ } => *mark = new_mark,
             Self::Container { items, text: _ } => {
