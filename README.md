@@ -17,3 +17,9 @@ DATABASE_URL=postgres://user:password@localhost/todos
 ```
 
 Then run the application as usual.
+
+## Web frontend
+
+Running `cargo run --bin server` will start the REST server on port 8080.
+The server now serves a very small HTML/JS client under `/` that can
+list, add, mark and delete todo items using the same API endpoints.
