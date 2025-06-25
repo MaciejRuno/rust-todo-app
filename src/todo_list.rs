@@ -16,13 +16,23 @@ impl TodoList {
 
     pub fn add_item(&mut self, item: Self) {
         match self {
-            Self::Container { items, text: _ } => {
+            Self::Container { items, .. } => {
                 items.push(item);
             }
-            Self::Item { mark: _, text } => {
-                *self = Self::new(text.to_string());
+            Self::Item { mark, text } => {
+                let original_mark = *mark;
+                let original_text = text.clone();
 
-                self.add_item(item);
+                *self = Self::new(text.clone());
+
+                if let Self::Container { items, .. } = self {
+                    items.push(Self::Item {
+                        mark: original_mark,
+                        text: original_text,
+                    });
+
+                    items.push(item);
+                }
             }
         }
     }
