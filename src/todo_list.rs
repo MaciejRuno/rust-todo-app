@@ -88,3 +88,91 @@ impl TodoList {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn add_item_turns_item_into_container_and_adds_child() {
+        let mut item = TodoList::Item {
+            mark: false,
+            text: "parent".to_string(),
+        };
+
+        item.add_item(TodoList::Item {
+            mark: false,
+            text: "child".to_string(),
+        });
+
+        match item {
+            TodoList::Container { ref items, ref text } => {
+                assert_eq!(text, "parent");
+                assert_eq!(items.len(), 1);
+                match items[0] {
+                    TodoList::Item { ref text, mark } => {
+                        assert_eq!(text, "child");
+                        assert!(!mark);
+                    }
+                    _ => panic!("child should remain item"),
+                }
+            }
+            _ => panic!("item should be converted to container"),
+        }
+    }
+
+    #[test]
+    fn get_index_returns_correct_nested_item() {
+        let mut root = TodoList::new("root".into());
+        root.add_item(TodoList::Item {
+            mark: false,
+            text: "first".into(),
+        });
+        root.add_item(TodoList::Item {
+            mark: false,
+            text: "second".into(),
+        });
+
+        if let TodoList::Container { ref mut items, .. } = root {
+            items[0].add_item(TodoList::Item {
+                mark: false,
+                text: "nested".into(),
+            });
+        }
+
+        // pre-order indices: 0 root, 1 first, 2 nested, 3 second
+        let elem = root.get_index(2);
+        match elem {
+            TodoList::Item { text, .. } => assert_eq!(text, "nested"),
+            _ => panic!("wrong element returned"),
+        }
+    }
+
+    #[test]
+    fn mark_recursively_updates_children() {
+        let mut root = TodoList::new("root".into());
+        root.add_item(TodoList::Item {
+            mark: false,
+            text: "first".into(),
+        });
+
+        root.add_item(TodoList::Item {
+            mark: false,
+            text: "second".into(),
+        });
+
+        // mark whole list as done
+        root.mark(true);
+
+        if let TodoList::Container { items, .. } = root {
+            for item in items {
+                match item {
+                    TodoList::Item { mark, .. } => assert!(mark),
+                    _ => (),
+                }
+            }
+        } else {
+            panic!("root should be a container");
+        }
+    }
+}
