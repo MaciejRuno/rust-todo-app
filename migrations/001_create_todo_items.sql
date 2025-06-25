@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS todo_items (
+    id SERIAL PRIMARY KEY,
+    text TEXT NOT NULL,
+    mark BOOLEAN NOT NULL DEFAULT FALSE,
+    parent_id INTEGER REFERENCES todo_items(id)
+);
