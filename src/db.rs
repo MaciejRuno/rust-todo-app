@@ -1,5 +1,5 @@
-use sqlx::{FromRow, PgPool};
 use serde::{Deserialize, Serialize};
+use sqlx::{FromRow, PgPool};
 
 #[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct TodoItem {

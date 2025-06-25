@@ -110,7 +110,10 @@ mod tests {
         });
 
         match item {
-            TodoList::Container { ref items, ref text } => {
+            TodoList::Container {
+                ref items,
+                ref text,
+            } => {
                 assert_eq!(text, "parent");
                 assert_eq!(items.len(), 1);
                 match items[0] {
