@@ -11,7 +11,7 @@ pub struct Cli {
 pub enum Command {
     /// Add a list element
     Add(AddCommand),
-    /// Mark list element as done
+    /// Mark or unmark a list element
     Mark(MarkCommand),
     /// Show list
     List,
