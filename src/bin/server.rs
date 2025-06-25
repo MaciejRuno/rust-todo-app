@@ -1,4 +1,5 @@
-use actix_web::{web, App, HttpServer, HttpResponse, Responder};
+use actix_files::Files;
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use sqlx::PgPool;
 
 #[path = "../config.rs"]
@@ -44,6 +45,13 @@ async fn mark_todo(
     }
 }
 
+async fn delete_todo(pool: web::Data<PgPool>, path: web::Path<i32>) -> impl Responder {
+    match db::delete_item(&pool, path.into_inner()).await {
+        Ok(()) => HttpResponse::Ok().finish(),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let config = Config::from_env();
@@ -56,7 +64,9 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(pool.clone()))
             .route("/todos", web::get().to(list_todos))
             .route("/todos", web::post().to(add_todo))
+            .route("/todos/{id}", web::delete().to(delete_todo))
             .route("/todos/{id}/mark", web::post().to(mark_todo))
+            .service(Files::new("/", "static").index_file("index.html"))
     })
     .bind(("0.0.0.0", 8080))?
     .run()
