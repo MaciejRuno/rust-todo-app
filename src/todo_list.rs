@@ -19,18 +19,12 @@ impl TodoList {
             Self::Container { items, .. } => {
                 items.push(item);
             }
-            Self::Item { mark, text } => {
-                let original_mark = *mark;
+            Self::Item { text, .. } => {
                 let original_text = text.clone();
 
-                *self = Self::new(text.clone());
+                *self = Self::new(original_text);
 
                 if let Self::Container { items, .. } = self {
-                    items.push(Self::Item {
-                        mark: original_mark,
-                        text: original_text,
-                    });
-
                     items.push(item);
                 }
             }
