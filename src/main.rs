@@ -1,14 +1,13 @@
 mod args;
-mod todo_list;
 mod config;
+mod todo_list;
 
 use args::{AddCommand, Cli, MarkCommand};
-use config::Config;
 use clap::Parser;
+use config::Config;
 use std::fs;
 use std::path::PathBuf;
 use todo_list::TodoList;
-
 
 fn todo_path() -> PathBuf {
     let mut path = std::env::temp_dir();
