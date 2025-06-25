@@ -1,7 +1,9 @@
 mod args;
 mod todo_list;
+mod config;
 
 use args::{AddCommand, Cli, MarkCommand};
+use config::Config;
 use clap::Parser;
 use std::fs;
 use std::path::PathBuf;
@@ -15,6 +17,9 @@ fn todo_path() -> PathBuf {
 }
 
 fn main() {
+    // Load configuration from environment
+    let _config = Config::from_env();
+
     // Get args
     let cli = Cli::parse();
 
